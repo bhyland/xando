@@ -34,7 +34,7 @@ app =
         , subscriptions = \m -> Sub.none
         , view = view
         }
-
+        
 
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
@@ -49,6 +49,7 @@ initialModel = { gameStage = ChoosingName
                }
 
 
+    
 isItMyTurn : Model -> Bool
 isItMyTurn model =
     case model.gameStage of

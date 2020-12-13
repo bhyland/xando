@@ -90,7 +90,8 @@ type ToBackend
                    
 -- Backend                     
 type alias BackendModel =
-    { clientList : Dict ClientId Name
+    { sessions : Dict SessionId Name
+    , clientList : Dict ClientId Name
     }
 
 type BackendMsg

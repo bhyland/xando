@@ -20,7 +20,8 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( { clientList = Dict.empty
+    ( { clientList = Dict.empty -- currently connected
+      , sessions = Dict.empty -- Persists across sessions instead of local storage
       }
     , Cmd.none
     )
@@ -32,6 +33,10 @@ update msg model =
         ClientConnected sessionId clientId ->
             let
                 name =
+                    Dict.get sessionId model.sessions
+                        |> Maybe.withDefault backupName
+                
+                backupName =
                     List.drop 
                     (modBy (List.length names) <| Dict.size model.clientList)
                     names
@@ -40,8 +45,13 @@ update msg model =
                         
                 clientList = 
                     Dict.insert clientId name model.clientList
+
+                sessions =
+                    Dict.insert sessionId name model.sessions
+                        
             in
-                ( { model | clientList = clientList }
+                ( { model | clientList = clientList
+                  , sessions = sessions }
                 , sendToFrontend clientId <| YourIdIs clientId name )
 
         ClientDisconnected sessionId clientId ->
@@ -60,8 +70,12 @@ updateFromFrontend sessionId clientId msg model =
             let
                 clientList = 
                     Dict.insert clientId name model.clientList
+
+                sessions =
+                    Dict.insert sessionId name model.sessions
             in
-                ( { model | clientList = clientList }
+                ( { model | clientList = clientList
+                  , sessions = sessions}
                 , broadcast (ClientListChanged clientList) )
 
         Select opponentId ->
