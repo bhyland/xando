@@ -5,6 +5,7 @@ import Evergreen.V5.Types as New
 import Lamdera.Migrations exposing (..)
 import Dict
 
+
 frontendModel : Old.FrontendModel -> ModelMigration New.FrontendModel New.FrontendMsg
 frontendModel old =
     ModelUnchanged
